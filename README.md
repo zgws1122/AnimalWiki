@@ -25,9 +25,62 @@
 | 实体 | 说明 |
 |------|------|
 | User | 用户信息（用户名、密码、昵称、头像） |
-| Animal | 动物百科数据（名称、分类、习性、保护等级等） |
+| Animal | 动物百科数据（中文名、英文名、分类、体型、分布区域、栖息地、食性、保护等级、图片） |
 | Favorite | 用户收藏记录（用户ID + 动物ID） |
 | SearchHistory | 搜索历史记录 |
+
+**User 表结构：**
+
+| 类型 | 字段 | 约束 | 说明 |
+|------|------|------|------|
+| Long | id | PK, AUTOINCREMENT | 主键 - 用户 ID |
+| String | username | NOT NULL | 用户名 |
+| String | password | NOT NULL | 密码 |
+| String | nickname |  | 昵称 |
+| String | avatar |  | 头像 URL |
+| Long | createTime | NOT NULL | 创建时间 |
+
+唯一索引：id
+
+**Animal 表结构：**
+
+| 类型 | 字段 | 约束 | 说明 |
+|------|------|------|------|
+| Long | id | PK, AUTOINCREMENT | 主键 - 动物 ID |
+| String | name | NOT NULL | 动物中文名 |
+| String | englishName |  | 动物英文名 |
+| String | category |  | 动物分类 |
+| String | body |  | 动物体型 |
+| String | distribution |  | 动物分布区域 |
+| String | habitat |  | 动物栖息地 |
+| String | diet |  | 动物食性 |
+| String | protectionLevel |  | 动物保护等级 |
+| String | image |  | 动物图片 URL |
+
+**Favorite 表结构：**
+
+| 类型 | 字段 | 约束 | 说明 |
+|------|------|------|------|
+| Long | userId | PK, FK | 外键 - 用户 ID |
+| Long | animalId | PK, FK | 外键 - 动物 ID |
+| Long | createTime | NOT NULL | 收藏时间 |
+
+主键：(userId, animalId)
+外键：
+userId → User(id)
+animalId → Animal(id)
+
+**SearchHistory 表结构：**
+| 类型 | 字段 | 约束 | 说明 |
+|------|------|------|------|
+| Long | id | PK | 主键 - 搜索记录 ID |
+| Long | userId | FK | 外键 - 用户 ID |
+| String | keyword | NOT NULL | 搜索关键词 |
+| Long | createTime | NOT NULL | 搜索时间 |
+
+唯一索引：(userId, keyword)
+外键：
+userId → User(id)
 
 ## 项目结构
 
