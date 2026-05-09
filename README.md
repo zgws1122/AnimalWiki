@@ -82,6 +82,10 @@ animalId → Animal(id)
 外键：
 userId → User(id)
 
+### ER图
+<img width="1088" height="649" alt="屏幕截图 2026-05-09 220157" src="https://github.com/user-attachments/assets/8bbaa4e8-2bb4-4793-b083-906972b9d583" />
+
+
 ## 项目结构
 
 ```
