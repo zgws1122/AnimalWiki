@@ -51,4 +51,4 @@ app/
 - Android Studio Hedgehog 或更高版本
 - JDK 11+
 - Android SDK 36
-- 最低支持 Android 8.0 (API 26)
+- 最低支持 Android 7.0 (API 24)
