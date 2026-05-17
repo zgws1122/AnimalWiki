@@ -7,8 +7,14 @@ import androidx.room.PrimaryKey
 data class AnimalEntity(
     @PrimaryKey val id: Int,
     val name: String,
+    val latinName: String,
     val category: String,
     val description: String,
+    val habitat: String,
+    val diet: String,
+    val conservationStatus: String,
     val imageUrl: String?,
-    val timestamp: Long = System.currentTimeMillis()
+    val taxonomy: String = "",
+    val bodySize: String = "",
+    val distribution: String = ""
 )

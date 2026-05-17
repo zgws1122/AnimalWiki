@@ -1,48 +1,97 @@
 package com.example.code.data.repository
 
-import com.example.code.data.remote.dto.PostDto
-import kotlinx.coroutines.test.runTest
+import com.example.code.data.local.entity.AnimalEntity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AnimalRepositoryTest {
 
-    @Test
-    fun postDtoToEntity_mapsAllFieldsCorrectly() = runTest {
-        val dto = PostDto(
-            userId = 1,
-            id = 42,
-            title = "东北虎",
-            body = "东北虎是现存最大的猫科动物。"
-        )
+    private val sampleJson = """
+    [
+      {
+        "id": 1,
+        "name": "大熊猫",
+        "latinName": "Ailuropoda melanoleuca",
+        "category": "哺乳动物",
+        "description": "中国国宝",
+        "habitat": "高山竹林",
+        "diet": "竹子",
+        "conservationStatus": "易危 (VU)",
+        "imageUrl": null
+      },
+      {
+        "id": 2,
+        "name": "丹顶鹤",
+        "latinName": "Grus japonensis",
+        "category": "鸟类",
+        "description": "东亚大型涉禽",
+        "habitat": "湿地沼泽",
+        "diet": "鱼虾蛙",
+        "conservationStatus": "濒危 (EN)",
+        "imageUrl": null
+      },
+      {
+        "id": 3,
+        "name": "扬子鳄",
+        "latinName": "Alligator sinensis",
+        "category": "爬行动物",
+        "description": "中国特有鳄鱼",
+        "habitat": "长江中下游",
+        "diet": "螺蚌虾鱼",
+        "conservationStatus": "极危 (CR)",
+        "imageUrl": null
+      }
+    ]
+    """.trimIndent()
 
-        val entity = AnimalRepository.toEntity(dto)
-
-        assertEquals(42, entity.id)
-        assertEquals("东北虎", entity.name)
-        assertEquals("哺乳动物", entity.category)
-        assertEquals("东北虎是现存最大的猫科动物。", entity.description)
+    private fun parseAnimals(): List<AnimalEntity> {
+        val type = object : TypeToken<List<AnimalEntity>>() {}.type
+        return Gson().fromJson(sampleJson, type)
     }
 
     @Test
-    fun postDtoToEntity_mapsBirdCategory() = runTest {
-        val dto = PostDto(userId = 2, id = 10, title = "朱鹮", body = "国家一级保护动物")
-        val entity = AnimalRepository.toEntity(dto)
-        assertEquals("鸟类", entity.category)
+    fun jsonParsesCorrectly() {
+        val animals = parseAnimals()
+        assertEquals(3, animals.size)
     }
 
     @Test
-    fun postDtoToEntity_mapsReptileCategory() = runTest {
-        val dto = PostDto(userId = 3, id = 15, title = "中华鳖", body = "淡水水域分布")
-        val entity = AnimalRepository.toEntity(dto)
-        assertEquals("爬行动物", entity.category)
+    fun jsonMapsAllFields() {
+        val animals = parseAnimals()
+        val panda = animals[0]
+        assertEquals(1, panda.id)
+        assertEquals("大熊猫", panda.name)
+        assertEquals("Ailuropoda melanoleuca", panda.latinName)
+        assertEquals("哺乳动物", panda.category)
+        assertEquals("中国国宝", panda.description)
+        assertEquals("高山竹林", panda.habitat)
+        assertEquals("竹子", panda.diet)
+        assertEquals("易危 (VU)", panda.conservationStatus)
     }
 
     @Test
-    fun postDtoToEntity_unknownUserIdMapsToOther() = runTest {
-        val dto = PostDto(userId = 99, id = 50, title = "未知", body = "未分类")
-        val entity = AnimalRepository.toEntity(dto)
-        assertEquals("其他", entity.category)
+    fun jsonContainsAllCategories() {
+        val animals = parseAnimals()
+        val categories = animals.map { it.category }.distinct()
+        assertTrue(categories.contains("哺乳动物"))
+        assertTrue(categories.contains("鸟类"))
+        assertTrue(categories.contains("爬行动物"))
+    }
+
+    @Test
+    fun allFieldsNonBlank() {
+        val animals = parseAnimals()
+        animals.forEach { animal ->
+            assertTrue(animal.name.isNotBlank())
+            assertTrue(animal.latinName.isNotBlank())
+            assertTrue(animal.description.isNotBlank())
+            assertTrue(animal.habitat.isNotBlank())
+            assertTrue(animal.diet.isNotBlank())
+            assertTrue(animal.conservationStatus.isNotBlank())
+        }
     }
 }

@@ -1,23 +1,33 @@
 package com.example.code.data.remote
 
-import com.example.code.data.remote.dto.PostDto
-import retrofit2.http.Body
+import com.example.code.data.remote.dto.DescriptionResponse
+import com.example.code.data.remote.dto.DescriptionTypeResponse
+import com.example.code.data.remote.dto.DbaseNameResponse
 import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("posts")
-    suspend fun getPosts(): List<PostDto>
+    /** 查询所有可用数据库名称 */
+    @GET("api/v1/dbaseName")
+    suspend fun getDbaseNames(
+        @Query("apiKey") apiKey: String
+    ): DbaseNameResponse
 
-    @GET("posts/{id}")
-    suspend fun getPost(@Path("id") id: Int): PostDto
+    /** 根据物种名查询描述类型 */
+    @GET("api/v1/descriptionType")
+    suspend fun getDescriptionType(
+        @Query("scientificName") scientificName: String,
+        @Query("dbaseName") dbaseName: String,
+        @Query("apiKey") apiKey: String
+    ): DescriptionTypeResponse
 
-    @POST("posts")
-    suspend fun createPost(@Body post: PostDto): PostDto
-
-    @GET("posts")
-    suspend fun getPostsByUser(@Query("userId") userId: Int): List<PostDto>
+    /** 根据物种名和描述类型查询描述详情 */
+    @GET("api/v1/description")
+    suspend fun getDescription(
+        @Query("scientificName") scientificName: String,
+        @Query("dbaseName") dbaseName: String,
+        @Query("descriptionType") descriptionType: String,
+        @Query("apiKey") apiKey: String
+    ): DescriptionResponse
 }
